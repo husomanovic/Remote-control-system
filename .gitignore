@@ -1,0 +1,47 @@
+# Node.js
+backend/node_modules/
+backend/.env
+backend/dist/
+backend/build/
+backend/.next/
+backend/.turbo/
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+
+# Next.js
+frontend/.next/
+frontend/node_modules/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/out/
+frontend/.turbo/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# General OS/files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Optional: Ignore IDE/editor settings
+.vscode/
+.idea/
+*.swp
+
+# Optional: Ignore local environment files at root (if any)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

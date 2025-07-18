@@ -9,77 +9,71 @@ const DeviceScreen = ({ session, token }) => {
     const socketRef = useRef(null);
     const [started, setStarted] = useState(false);
     const body = useRef(null);
-    const [mouseX, setMouseX] = useState(0);
-    const [mouseY, setMouseY] = useState(0);
 
     let lastMouseSent = 0;
-    const throttleDelay = 50; // 50ms
+    const throttleDelay = 50;
 
     const mouseMoveEvent = (e) => {
         const now = Date.now();
         if (now - lastMouseSent < throttleDelay)
             return;
-
         lastMouseSent = now;
-
         const rect = e.target.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
         const y = (e.clientY - rect.top) / rect.height;
 
-        setMouseX(x);
-        setMouseY(y);
-
-        console.log(x, y);
+        if (socketRef.current) {
+            socketRef.current.emit("mouse-event", { type: "move", x, y, session });
+        }
     }
 
-
     const mouseDownEvent = (e) => {
-        console.log("Mouse down", e.button);
+        if (socketRef.current) {
+            socketRef.current.emit("mouse-event", { type: "mousedown", button: e.button === 2 ? "right" : e.button === 1 ? "middle" : "left", session });
+        }
     };
 
     const mouseUpEvent = (e) => {
-        console.log("Mouse up", e.button);
+        if (socketRef.current) {
+            socketRef.current.emit("mouse-event", { type: "mouseup", button: e.button === 2 ? "right" : e.button === 1 ? "middle" : "left", session });
+        }
     };
 
     const mouseClickEvent = (e) => {
-        console.log("Mouse click", e.button);
+        if (socketRef.current) {
+            socketRef.current.emit("mouse-event", { type: "click", button: e.button === 2 ? "right" : e.button === 1 ? "middle" : "left", session });
+        }
     };
 
     const mouseDblClickEvent = (e) => {
-        console.log("Double click");
+        if (socketRef.current) {
+            socketRef.current.emit("mouse-event", { type: "click", button: e.button === 2 ? "right" : e.button === 1 ? "middle" : "left", double: true, session });
+        }
     };
 
     let lastScrollSent = 0;
     const scrollThrottleDelay = 80;
-
     const mouseWheelEvent = (e) => {
         const now = Date.now();
         if (now - lastScrollSent < scrollThrottleDelay) return;
-
         lastScrollSent = now;
-
-        console.log(e.deltaY);
+        if (socketRef.current) {
+            socketRef.current.emit("mouse-event", { type: "scroll", amount: e.deltaY, session });
+        }
     };
 
-    const mouseEnterEvent = (e) => {
-        console.log("Mouse entered element");
+    const keydownEvent = (e) => {
+        if (socketRef.current) {
+            socketRef.current.emit("keyboard-event", { key: e.key, type: "keydown", session });
+        }
     };
 
-    const mouseLeaveEvent = (e) => {
-        console.log("Mouse left element");
-    };
 
     useEffect(() => {
         let isMounted = true;
         let localPeerConnection = null;
         let localSocket = null;
         let offerSent = false;
-
-
-
-        const keydownEvent = (e) => {
-            console.log(e.key);
-        };
 
         body.current = document.querySelector('body');
         body.current.addEventListener("keydown", keydownEvent);
@@ -92,8 +86,6 @@ const DeviceScreen = ({ session, token }) => {
             element.addEventListener("click", mouseClickEvent);
             element.addEventListener("dblclick", mouseDblClickEvent);
             element.addEventListener("wheel", mouseWheelEvent);
-            element.addEventListener("mouseenter", mouseEnterEvent);
-            element.addEventListener("mouseleave", mouseLeaveEvent);
 
         }
         const cleanup = () => {
@@ -188,8 +180,6 @@ const DeviceScreen = ({ session, token }) => {
             element.removeEventListener("click", mouseClickEvent);
             element.removeEventListener("dblclick", mouseDblClickEvent);
             element.removeEventListener("wheel", mouseWheelEvent);
-            element.removeEventListener("mouseenter", mouseEnterEvent);
-            element.removeEventListener("mouseleave", mouseLeaveEvent);
 
             isMounted = false;
             cleanup();
@@ -210,7 +200,7 @@ const DeviceScreen = ({ session, token }) => {
                 ref={videoRef}
                 autoPlay
                 playsInline
-                muted // ✅ Dodaj ovo
+                muted
                 className="max-w-full max-h-full rounded shadow-lg "
             />
         </div>

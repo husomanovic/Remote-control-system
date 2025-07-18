@@ -7,6 +7,7 @@ import numpy as np
 import mss
 import time
 from av import VideoFrame
+import pyautogui
 
 class ScreenVideoStreamTrack(VideoStreamTrack):
     def __init__(self, monitor=0, fps=60):
@@ -79,8 +80,6 @@ def start_connection(token, session, API_URL  ):
         await sio.emit("webrtc-answer", {"answer": {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}, "session": session})
 
 
-
-
     @sio.event
     async def connect():
         print("[+] [WebRTC Agent] Socket connected!")
@@ -112,9 +111,43 @@ def start_connection(token, session, API_URL  ):
             if candidate.get("candidate") is not None and candidate.get("sdpMid") is not None and candidate.get("sdpMLineIndex") is not None:
                 print("[+] [WebRTC Agent] Received ICE candidate")
                 await pc.addIceCandidate( rtc_candidate)
-                # event = type("IceEvent", (), {"candidate": rtc_candidate})
             else:
                 print("[!] [WebRTC Agent] Ignored null/invalid ICE candidate")
+
+            
+        @sio.on("mouse-event")
+        async def mouse_event(data):
+            try:
+                event_type = data.get("type")
+                if event_type == "move":
+                    screen_w, screen_h = pyautogui.size()
+                    x = int(data.get("x", 0.5) * screen_w)
+                    y = int(data.get("y", 0.5) * screen_h)
+                    pyautogui.moveTo(x, y)
+                elif event_type == "click":
+                    button = data.get("button", "left")
+                    pyautogui.click(button=button)
+                elif event_type == "mousedown":
+                    button = data.get("button", "left")
+                    pyautogui.mouseDown(button=button)
+                elif event_type == "mouseup":
+                    button = data.get("button", "left")
+                    pyautogui.mouseUp(button=button)
+                elif event_type == "scroll":
+                    amount = data.get("amount", 0)
+                    pyautogui.scroll(amount)
+            except Exception as e:
+                print(f"[!] Mouse event error: {e}")
+
+        @sio.on("keyboard-event")
+        async def keyboard_event(data):
+            try:
+                event_type = data.get("type")
+                key = data.get("key")
+                if event_type == "keydown":
+                    pyautogui.keyDown(key)
+            except Exception as e:
+                print(f"[!] Keyboard event error: {e}")
 
     async def main():
         try:

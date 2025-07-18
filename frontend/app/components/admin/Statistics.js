@@ -93,7 +93,7 @@ const Statistics = () => {
             <div className="mb-8 flex justify-between items-start">
                 <div>
                     <h1 className="text-4xl font-bold gradient-text mb-3">System Statistics</h1>
-                    <p className="text-gray-400 text-lg">Real-time monitoring and analytics</p>
+                    <p className="text-gray-400 text-lg">Real-time monitoring system statistics</p>
                 </div>
                 {lastUpdate && (
                     <div className="text-right">

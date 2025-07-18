@@ -2,8 +2,8 @@ import argparse
 from device import verifyDevice, verifySession, getDeviceName, getDeviceid
 from conestion import start_connection
 
-API_URL = "http://localhost:5000"
-# API_URL = "http://172.22.3.196:5000"
+# API_URL = "http://localhost:5000"
+API_URL = "http://172.22.3.196:5000"
 
 def main():
     parser = argparse.ArgumentParser(description="Remote Agent")

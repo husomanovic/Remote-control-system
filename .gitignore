@@ -1,3 +1,5 @@
+agent/__pycache__
+
 # Node.js
 backend/node_modules/
 backend/.env
@@ -21,6 +23,7 @@ frontend/.turbo/
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
+frontend/public/
 
 # General OS/files
 .DS_Store
@@ -45,3 +48,4 @@ pnpm-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
+

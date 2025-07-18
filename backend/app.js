@@ -20,13 +20,13 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: [process.env.FRONTEND_URL, "http://192.168.16.225"],
+        origin: [process.env.FRONTEND_URL],
         credentials: true
     }
 });
 
 app.use(cors({
-    origin: [process.env.FRONTEND_URL, "http://192.168.16.225"],
+    origin: [process.env.FRONTEND_URL],
     credentials: true
 }));
 
